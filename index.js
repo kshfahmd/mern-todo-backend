@@ -11,7 +11,15 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://todopro-nu.vercel.app/",
+    ],
+  })
+);
+
 
 app.get("/", (req, res) => {
   res.send("MERN Todo Backend Running ✅");
