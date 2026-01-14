@@ -10,7 +10,7 @@ const passwordSchema = z
   .regex(/[0-9]/, "Password must contain at least 1 number")
   .regex(/[^a-zA-Z0-9]/, "Password must contain at least 1 special character");
 
-//Name policy 
+//Name policy
 // - 2 to 50 chars
 const nameSchema = z
   .string()
