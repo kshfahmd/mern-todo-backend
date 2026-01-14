@@ -26,5 +26,63 @@ const getTodos = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+// PUT /api/todos/:id
+const updateTodo = async (req, res) => {
+  try {
+    const { text } = req.body;
 
-module.exports = { createTodo, getTodos };
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ message: "Todo text is required" });
+    }
+
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      { text: text.trim() },
+      { new: true }
+    );
+
+    if (!updatedTodo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    res.json(updatedTodo);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// DELETE /api/todos/:id
+const deleteTodo = async (req, res) => {
+  try {
+    const deletedTodo = await Todo.findByIdAndDelete(req.params.id);
+
+    if (!deletedTodo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    res.json({ message: "Todo deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// PATCH /api/todos/:id/toggle
+const toggleTodo = async (req, res) => {
+  try {
+    const todo = await Todo.findById(req.params.id);
+
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    todo.completed = !todo.completed;
+    await todo.save();
+
+    res.json(todo);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+module.exports = { createTodo, getTodos, updateTodo, deleteTodo, toggleTodo };
+
