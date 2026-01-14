@@ -9,16 +9,13 @@ const {
   toggleTodo,
 } = require("../controllers/todoController");
 
-router.post("/", createTodo);
-router.get("/", getTodos);
+const { protect } = require("../middleware/authMiddleware");
 
-// Update todo text
-router.put("/:id", updateTodo);
-
-// Delete todo
-router.delete("/:id", deleteTodo);
-
-// Toggle completed
-router.patch("/:id/toggle", toggleTodo);
+// ✅ all todo routes are protected
+router.post("/", protect, createTodo);
+router.get("/", protect, getTodos);
+router.put("/:id", protect, updateTodo);
+router.delete("/:id", protect, deleteTodo);
+router.patch("/:id/toggle", protect, toggleTodo);
 
 module.exports = router;
