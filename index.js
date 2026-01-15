@@ -10,27 +10,16 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json());
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  process.env.FRONTEND_URL, //Vercel URL from env
-];
+const cors = require("cors");
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow non-browser clients like Postman
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-
-      return callback(new Error(`CORS blocked for origin: ${origin}`), false);
-    },
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 app.get("/", (req, res) => {
   res.send("MERN Todo Backend Running ✅");
