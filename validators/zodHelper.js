@@ -1,8 +1,11 @@
 const formatZodError = (zodError) => {
-  return zodError.errors.map((err) => ({
-    field: err.path.join("."),
-    message: err.message,
+  const issues = zodError?.issues || [];
+
+  return issues.map((issue) => ({
+    field: issue.path?.join(".") || "unknown",
+    message: issue.message,
   }));
 };
 
 module.exports = { formatZodError };
+

@@ -3,7 +3,7 @@ const validate = (schema) => (req, res, next) => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      // ✅ Zod error details are in `result.error.issues`
+      //Zod error details are in `result.error.issues`
       const issues = result.error?.issues || [];
 
       return res.status(400).json({
