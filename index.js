@@ -14,25 +14,27 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  "https://todopro-nu.vercel.app/",
+  process.env.FRONTEND_URL, //Vercel URL from env
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (postman, curl)
+      // allow non-browser clients like Postman
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("CORS not allowed for this origin"), false);
-      }
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`), false);
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+//handle preflight requests
+app.options("*", cors());
+
 
 app.get("/", (req, res) => {
   res.send("MERN Todo Backend Running ✅");
