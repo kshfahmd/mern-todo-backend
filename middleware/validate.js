@@ -1,18 +1,28 @@
 const validate = (schema) => (req, res, next) => {
-  const result = schema.safeParse(req.body);
+  try {
+    const result = schema.safeParse(req.body);
 
-  if (!result.success) {
-    return res.status(400).json({
-      message: "Validation error",
-      errors: result.error.errors.map((e) => ({
-        field: e.path.join("."),
-        message: e.message,
-      })),
+    if (!result.success) {
+      // ✅ Zod error details are in `result.error.issues`
+      const issues = result.error?.issues || [];
+
+      return res.status(400).json({
+        message: "Validation error",
+        errors: issues.map((issue) => ({
+          field: issue.path?.join(".") || "unknown",
+          message: issue.message,
+        })),
+      });
+    }
+
+    req.body = result.data; // sanitized
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      message: "Validation middleware error",
+      error: err.message,
     });
   }
-
-  req.body = result.data; // sanitized data
-  next();
 };
 
 module.exports = validate;
