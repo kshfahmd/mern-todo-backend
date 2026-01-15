@@ -32,10 +32,6 @@ app.use(
   })
 );
 
-//handle preflight requests
-app.options("/*", cors());
-
-
 app.get("/", (req, res) => {
   res.send("MERN Todo Backend Running ✅");
 });
